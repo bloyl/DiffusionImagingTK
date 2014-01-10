@@ -1,3 +1,3 @@
-project(ExternalTemplate)
-set(ExternalTemplate_LIBRARIES ExternalTemplate)
+project(DiffusionImagingTK)
+set(DiffusionImagingTK_LIBRARIES DiffusionImagingTK)
 itk_module_impl()

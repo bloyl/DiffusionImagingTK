@@ -1,0 +1,4 @@
+#include <vnl/vnl_matrix_fixed.txx>
+VNL_MATRIX_FIXED_INSTANTIATE(int,15,15);
+VNL_MATRIX_FIXED_INSTANTIATE(float,15,15);
+VNL_MATRIX_FIXED_INSTANTIATE(double,15,15);
