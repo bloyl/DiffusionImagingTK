@@ -226,8 +226,8 @@ public:
             RealValueType& gaussCurvature, RealValueType& meanCurvature, RealValueType& k1, RealValueType& k2) const;
 
   /// Evaluate the jth Basis Function
-  static const double Y( int j, double theta, double phi );
-  static const double Y( int j, GradientDirectionType Gradient)
+  static double Y( int j, double theta, double phi );
+  static double Y( int j, GradientDirectionType Gradient)
   {
     double theta = acos(Gradient[2]);
     double phi   = atan2(Gradient[1],Gradient[0]); // atan2(y,x) = atan(y/x);
@@ -241,9 +241,9 @@ public:
 
   // Returns the normalization constant for the SH basis function with parameters (l,m).
   // called by itkPeakFindingCalculator
-  static const double K( int l, int m );
+  static double K( int l, int m );
 
-  static const unsigned int GetJ(int,int);
+  static unsigned int GetJ(int,int);
 
   void Normalize();
 protected:

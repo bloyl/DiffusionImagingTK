@@ -401,10 +401,6 @@ testDeterminisitic()
   else
     std::cout << "  -----Passed Tensorline PickNext(PSL)" << std::endl;
 
-
-
-
-
   std::cout << "Testing Determinisitic methods succeeded" << std::endl << std::endl;
 
   return EXIT_SUCCESS;
@@ -431,6 +427,7 @@ EvaluateOdf(const PixelType dti, const DirectionType dir)
   val /= vcl_sqrt( vnl_det(D) );
   val /= vcl_pow( inner_product(g,Dinv*g), 1.5);
 
+  return val;
 }
 
 int
@@ -608,7 +605,7 @@ testPROB()
 } // end empty namespace
 
 using namespace itk;
-int itkTrackerDirectionPickerDTITest( int argc, char * argv[] )
+int itkTrackerDirectionPickerDTITest( int, char ** )
 {
 
   // if ( testInitialize() )

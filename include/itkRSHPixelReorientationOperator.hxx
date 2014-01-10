@@ -246,7 +246,7 @@ PixelReorientationOperator< SymRealSphericalHarmonicRep<TCompType,TOrder> >
 
 /****EDMONDS implementaiton */
 template <class TCompType, unsigned int TOrder >
-const double
+double
 PixelReorientationOperator< SymRealSphericalHarmonicRep<TCompType,TOrder> >
 ::computeWignerLittleDPlus(int l, int mp, int m)
 {

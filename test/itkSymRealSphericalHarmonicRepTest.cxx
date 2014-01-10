@@ -85,7 +85,7 @@ typename GradientDirectionContainerType::Pointer generateGradientDirections(unsi
   TriangleMeshType::Pointer sphere = mySphereMeshSource->GetOutput();
 
   unsigned int numPoints = sphere->GetPoints()->Size();
-  PointType  point;
+  PointType  point(0);
 
   typename GradientDirectionContainerType::Pointer gradCont = GradientDirectionContainerType::New();
   typename GradientDirectionContainerType::Element gradDir;

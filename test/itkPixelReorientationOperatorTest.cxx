@@ -23,7 +23,6 @@
 #include <itkDTIPixelReorientationOperator.h>
 #include <itkRSHPixelReorientationOperator.h>
 
-
 const double percision = 0.0001;
 const unsigned int numTests = 100;
 
@@ -446,7 +445,6 @@ int itkPixelReorientationOperationOnRSHTest2( vnl_random rand )
   GradType dir;
 
   double alpha,beta,gamma;
-  unsigned int numTests = 100;
 
   itk::TimeProbe timer;
   timer.Start();
@@ -546,7 +544,6 @@ int itkPixelReorientationOperationOnRSHTest3( vnl_random rand )
   GradType dir;
 
   double alpha,beta,gamma;
-  unsigned int numTests = 100;
 
   itk::TimeProbe timer;
   timer.Start();

@@ -17,7 +17,7 @@ namespace{
 
 //GradientDirectionContainerType
 template <class GradientDirectionContainerType>
-typename GradientDirectionContainerType::Pointer generateGradientDirections(unsigned int resolution)
+typename GradientDirectionContainerType::Pointer generateGradientDirections( int resolution )
 {
   typename GradientDirectionContainerType::Pointer gradCont = GradientDirectionContainerType::New();
   typename GradientDirectionContainerType::Element gradDir;
@@ -133,7 +133,7 @@ typename GradientDirectionContainerType::Pointer generateGradientDirections(unsi
     TriangleMeshType::Pointer sphere = mySphereMeshSource->GetOutput();
 
     unsigned int numPoints = sphere->GetPoints()->Size();
-    PointType  point;
+    PointType  point(0);
 
     gradCont->Reserve(numPoints+resolution);
     for (unsigned int pointIndex = 0; pointIndex < numPoints; pointIndex++)
@@ -144,7 +144,7 @@ typename GradientDirectionContainerType::Pointer generateGradientDirections(unsi
     }
 
     //Add 0,0,0 vectors for B0images
-    for (unsigned int pointIndex = 0; pointIndex < resolution; pointIndex++)
+    for (int pointIndex = 0; pointIndex < resolution; pointIndex++)
     {
       gradDir[0] = 0.0; gradDir[1] = 0.0; gradDir[2] = 0.0;
       gradCont->InsertElement(numPoints+pointIndex,gradDir);
@@ -156,13 +156,12 @@ typename GradientDirectionContainerType::Pointer generateGradientDirections(unsi
 
 template <typename DWIPixelType, typename GradientDirectionContainerType, typename DtType>
 DWIPixelType
-generateTestData(typename GradientDirectionContainerType::Pointer gradContainer, double bValue,
+generateTestData(typename GradientDirectionContainerType::Pointer gradContainer,
                 DtType dt, double s0, double noiseAmp)
 
 {
   const unsigned int numberOfGradientImages = gradContainer->Size();
   typename GradientDirectionContainerType::Element dir;
-  double BValueSqrt = vcl_sqrt(bValue);
 
   DWIPixelType dwi;
   dwi.SetSize(numberOfGradientImages);
@@ -233,9 +232,9 @@ int diffusionTensorTest()
   inpDt3[5] = 1.7E-3;
 
   //Test No Noise!
-  DWIPixelType sig1 = generateTestData<DWIPixelType, GradientDirectionContainerType, DtType>(gradDirs,bValue,inpDt1,5000.,0.);
-  DWIPixelType sig2 = generateTestData<DWIPixelType, GradientDirectionContainerType, DtType>(gradDirs,bValue,inpDt2,5000.,0.);
-  DWIPixelType sig3 = generateTestData<DWIPixelType, GradientDirectionContainerType, DtType>(gradDirs,bValue,inpDt3,5000.,0.);
+  DWIPixelType sig1 = generateTestData<DWIPixelType, GradientDirectionContainerType, DtType>(gradDirs, inpDt1, 5000., 0.);
+  DWIPixelType sig2 = generateTestData<DWIPixelType, GradientDirectionContainerType, DtType>(gradDirs, inpDt2, 5000., 0.);
+  DWIPixelType sig3 = generateTestData<DWIPixelType, GradientDirectionContainerType, DtType>(gradDirs, inpDt3, 5000., 0.);
 
   DWIPixelType res1;
   res1.SetSize(sig1.Size());
@@ -300,9 +299,9 @@ int diffusionTensorTest()
   std::cout << "!!!! NO CHECKS Made !!!" << std::endl;
 
   // Test with noise
-  sig1 = generateTestData<DWIPixelType, GradientDirectionContainerType, DtType>(gradDirs,bValue,inpDt1,5000.,500.);
-  sig2 = generateTestData<DWIPixelType, GradientDirectionContainerType, DtType>(gradDirs,bValue,inpDt2,5000.,500.);
-  sig3 = generateTestData<DWIPixelType, GradientDirectionContainerType, DtType>(gradDirs,bValue,inpDt3,5000.,500.);
+  sig1 = generateTestData<DWIPixelType, GradientDirectionContainerType, DtType>(gradDirs, inpDt1, 5000., 500.);
+  sig2 = generateTestData<DWIPixelType, GradientDirectionContainerType, DtType>(gradDirs, inpDt2, 5000., 500.);
+  sig3 = generateTestData<DWIPixelType, GradientDirectionContainerType, DtType>(gradDirs, inpDt3, 5000., 500.);
 
   //Test ordinary least squares (OLS)
   dt1    = dtCalc->ComputeTensorOLS(sig1, false);
@@ -413,13 +412,13 @@ int diffusionTensorTest()
   //           << "***  NOT AN ACTUAL TEST NO COMPARISION MADE TO RESULTS  *****************************" << std::endl
   //           << "*************************************************************************************" << std::endl;
 
-  // return EXIT_FAILURE;
+  return EXIT_FAILURE;
 }
 
 } // end empty namespace
 
 using namespace itk;
-int itkDiffusionModelCalculatorTest( int argc, char * argv[] )
+int itkDiffusionModelCalculatorTest( int , char ** )
 {
 
   if ( diffusionTensorTest() == EXIT_FAILURE )

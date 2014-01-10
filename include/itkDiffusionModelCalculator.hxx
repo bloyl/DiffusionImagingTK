@@ -142,7 +142,7 @@ DiffusionModelCalculator<TDWIPixelType, TPrecisionType, TOutputOrder>
 
   //compute log of DWI signal
   vnl_vector<PrecisionType>  logDWI(nGrads, static_cast<PrecisionType>(0.0) );
-  for (int i=0;i<nGrads;++i)
+  for (unsigned int i=0;i<nGrads;++i)
   {
     logDWI[i] = log(rawDWI[i]);
   }
@@ -182,7 +182,7 @@ DiffusionModelCalculator<TDWIPixelType, TPrecisionType, TOutputOrder>
 
   //compute log of DWI signal
   vnl_vector<PrecisionType>  logDWI(nGrads, static_cast<PrecisionType>(0.0) );
-  for (int i=0;i<nGrads;++i)
+  for (unsigned int i=0;i<nGrads;++i)
   {
     logDWI[i] = log(rawDWI[i]);
   }
@@ -192,7 +192,7 @@ DiffusionModelCalculator<TDWIPixelType, TPrecisionType, TOutputOrder>
 
   //Compute the Weight matrix (defined between equations 9 and 10)
   CoefficientMatrixType W(nGrads,nGrads,0.0);
-  for (int i=0;i<nGrads;++i)
+  for (unsigned int i=0;i<nGrads;++i)
   {
     PrecisionType tmp = exp(olsFitData[i]);
     W(i,i) = tmp * tmp;
@@ -232,7 +232,7 @@ DiffusionModelCalculator<TDWIPixelType, TPrecisionType, TOutputOrder>
 
   //compute log of DWI signal
   vnl_vector<PrecisionType>  logDWI(nGrads, static_cast<PrecisionType>(0.0) );
-  for (int i=0;i<nGrads;++i)
+  for (unsigned int i=0;i<nGrads;++i)
   {
     logDWI[i] = log(rawDWI[i]);
   }
@@ -242,7 +242,7 @@ DiffusionModelCalculator<TDWIPixelType, TPrecisionType, TOutputOrder>
 
   //Compute the Weight matrix (defined between equations 9 and 10)
   CoefficientMatrixType W(nGrads,nGrads,0.0);
-  for (int i=0;i<nGrads;++i)
+  for (unsigned int i=0;i<nGrads;++i)
   {
     PrecisionType tmp = exp(olsFitData[i]);
     W(i,i) = tmp * tmp;
@@ -260,7 +260,7 @@ DiffusionModelCalculator<TDWIPixelType, TPrecisionType, TOutputOrder>
   vnl_vector<PrecisionType> residualErrors = logDWI - ( m_BMatrix * Hp * logDWI);
 
   PrecisionType meanRes = 0.0;
-  for (int j=0;j<nGrads;++j)
+  for (unsigned int j=0;j<nGrads;++j)
   {
     residualErrors[j] *= sqrt(W(j,j));
     residualErrors[j] /= sqrt( 1 - H(j,j) );
@@ -273,7 +273,7 @@ DiffusionModelCalculator<TDWIPixelType, TPrecisionType, TOutputOrder>
   
   //Generate new dwiData...
   vnl_vector<PrecisionType>  logDWISample = olsFitData;
-  for (int j=0;j<nGrads;++j)
+  for (unsigned int j=0;j<nGrads;++j)
   {
     int randIndex = m_NumGenerator->GetIntegerVariate(nGrads-1);
     logDWISample[j] += residualErrors[randIndex]/sqrt(W(j,j));
@@ -284,7 +284,7 @@ DiffusionModelCalculator<TDWIPixelType, TPrecisionType, TOutputOrder>
 
   //Don't think I need to zero W.
   //Compute the Weight matrix
-  for (int i=0;i<nGrads;++i)
+  for (unsigned int i=0;i<nGrads;++i)
   {
     PrecisionType tmp = exp(olsFitData[i]);
     W(i,i) = tmp * tmp;
@@ -306,6 +306,9 @@ DiffusionModelCalculator<TDWIPixelType, TPrecisionType, TOutputOrder>
   dt(1,2) = wlsDtSamp[4];
   dt(2,2) = wlsDtSamp[5];
 
+  if (forceSPD) 
+    dt =  ForceTensorToSPD(dt);
+  
   return dt;
 }
 

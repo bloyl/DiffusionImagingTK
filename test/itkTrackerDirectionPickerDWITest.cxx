@@ -26,25 +26,25 @@
 
 namespace{
 
-int testInitialize()
-{
-  typedef itk::VectorImage<double, 3>      GradientImageType;
-  typedef itk::NearestNeighborInterpolateImageFunction<GradientImageType,double>
-                                           InterpType;
+// int testInitialize()
+// {
+//   typedef itk::VectorImage<double, 3>      GradientImageType;
+//   typedef itk::NearestNeighborInterpolateImageFunction<GradientImageType,double>
+//                                            InterpType;
   
-  typedef itk::TrackerDirectionPickerDWI<InterpType>
-                                           PickerType;
-  typedef PickerType::Superclass           PickerBaseType;
+//   typedef itk::TrackerDirectionPickerDWI<InterpType>
+//                                            PickerType;
+//   typedef PickerType::Superclass           PickerBaseType;
   
-  PickerType::Pointer pt = PickerType::New();
-  std::cerr << pt << std::endl;
+//   PickerType::Pointer pt = PickerType::New();
+//   std::cerr << pt << std::endl;
 
-  PickerBaseType::Pointer spt = dynamic_cast<PickerBaseType *>(pt.GetPointer());
+//   PickerBaseType::Pointer spt = dynamic_cast<PickerBaseType *>(pt.GetPointer());
  
-  std::cerr << spt << std::endl;
+//   std::cerr << spt << std::endl;
 
-  return EXIT_FAILURE;
-}
+//   return EXIT_FAILURE;
+// }
 
 ///////////////////////////////////////////////////////////////////////////////////////////
 
@@ -314,7 +314,7 @@ int test1()
 } // end empty namespace
 
 using namespace itk;
-int itkTrackerDirectionPickerDWITest( int argc, char * argv[] )
+int itkTrackerDirectionPickerDWITest( int , char ** )
 {
   // if ( testInitialize() )
   //   return EXIT_FAILURE;

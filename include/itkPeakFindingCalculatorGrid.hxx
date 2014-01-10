@@ -66,10 +66,7 @@ PeakFindingCalculatorGrid< TPixelType >
   unsigned int numPoints = m_SimplexMesh->GetPoints()->Size();
 
   PeakDirectionType           gradDir;
-  SimplexMeshType::PointType  point;
-
-  typedef  SimplexMeshType::NeighborListType              NeighborsListType;
-  NeighborsListType* neighbors = 0;
+  SimplexMeshType::PointType  point(0);
 
   m_ListOfNeighbors.clear();
   m_SampleDirections.clear();
@@ -270,6 +267,9 @@ PeakFindingCalculatorGrid< TPixelType >
 ::ConfirmPeakUsingCurvature(const PixelType rsh, const PeakDirectionType peak) const
 {
   //TODO look at this!!!
+  //Silence unused warning.
+  do { (void)(rsh); } while (0);
+  do { (void)(peak); } while (0);
   return true;
   // double k1,k2,K,H;
   // //Check the curvature

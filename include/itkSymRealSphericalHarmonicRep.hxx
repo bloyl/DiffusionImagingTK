@@ -239,7 +239,7 @@ SymRealSphericalHarmonicRep<T,TMaxOrder>
 }
 
 template<class T,unsigned int TMaxOrder>
-const unsigned int 
+unsigned int 
 SymRealSphericalHarmonicRep<T,TMaxOrder>
 ::GetJ(int l,int m)
 {
@@ -321,7 +321,7 @@ SymRealSphericalHarmonicRep<T,TMaxOrder>
  * Not sure how this stacks up agains other computation stratagies.
  */
 template<class T,unsigned int TMaxOrder>
-const double
+double
 SymRealSphericalHarmonicRep<T,TMaxOrder>
 ::Y( int j, double theta, double phi ) 
 {
@@ -348,7 +348,7 @@ SymRealSphericalHarmonicRep<T,TMaxOrder>
  * Factorial method.
  */
 template<class T,unsigned int TMaxOrder>
-const double
+double
 SymRealSphericalHarmonicRep<T,TMaxOrder>
 ::K( int l, int m )
 {
@@ -439,7 +439,6 @@ SymRealSphericalHarmonicRep<T,TMaxOrder>
   RealValueType lambda = this->Evaluate(theta, phi);
   const RealValueType E = lambda * lambda;
   const RealValueType G = lambda * lambda * vcl_sin(theta) * vcl_sin(theta);
-  const RealValueType F = 0;
 
   //Initialize 
   RealValueType e=lambda;                                   // lambda - Psi_{theta,theta}

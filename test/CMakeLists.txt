@@ -14,8 +14,7 @@ set(${itk-module}UnitTests
   itkTrackerDirectionPickerDTITest.cxx
   # itkFiberGeneratorTest.cxx
   # itkFiberTrackingManagerTest.cxx
-#  itkFiberTrackingManagerTest2.cxx
-#  itkTestBoundingBox.cxx 
+  # itkFiberTrackingManagerTest2.cxx
 )
 
 CreateTestDriver(${itk-module}Unit  "${${itk-module}-Test_LIBRARIES}" "${${itk-module}UnitTests}")
@@ -46,69 +45,11 @@ itk_add_test(NAME "${TestNamePrefix}itkTrackerDirectionPickerDTITest"
 itk_add_test(NAME "${TestNamePrefix}itkTrackerDirectionPickerRSHTest"
   COMMAND ${itk-module}UnitTestDriver itkTrackerDirectionPickerRSHTest )
 
-# ##########
-# # list of test implementations
-# set (
-#   DWICoreSOURCES
-#     itkPixelReorientationOperatorTest.cxx
-#     itkDiffusionModelCalculatorTest.cxx
-#     itkPeakFindingCalculatorGridTest.cxx
-#     itkSymRealSphericalHarmonicRepTest.cxx
-#     itkPeakFindingCalculatorTest.cxx
-# ) 
+itk_add_test(NAME "${TestNamePrefix}itkFiberGeneratorTest"
+  COMMAND ${itk-module}UnitTestDriver itkFiberGeneratorTest )
 
-# #     itkVariableLengthVectorCastImageFilterTest.cxx
-# #     itkFiberImpulseResponseImageCalculatorTest.cxx
-# #     itkFodCsdReconImageFilterTest.cxx
-# #     itkOdfReconImageFilterTest.cxx
-# #     itkSymRSHPowerImageFilterTest.cxx
-# #     itkSymRshReconImageFilterTest.cxx
-# # )
+itk_add_test(NAME "${TestNamePrefix}itkFiberTrackingManagerTest"
+  COMMAND ${itk-module}UnitTestDriver itkFiberTrackingManagerTest )
 
-# set (LIBS DWICore ${ITK_LIBRARIES})
-# if ("${ITK_VERSION_MAJOR}" LESS 4)
-#   list (APPEND LIBS ITKNumerics ITKCommon ITKIO)
-# endif ()
-
-# # build test driver
-# create_test_sourcelist (DWICoreTest_SOURCES DWICoreSourceTestsDriver.cxx ${DWICoreSOURCES})
-
-# # build test driver
-# add_executable (DWICoreTest ${DWICoreTest_SOURCES})
-# target_link_libraries (DWICoreTest ${LIBS})
-
-# # add tests
-# foreach(source IN LISTS DWICoreSOURCES)
-#   get_filename_component(test_name ${source} NAME_WE)
-#   add_test( ${test_name} "${EXECUTABLE_OUTPUT_PATH}/DWICoreTest" "${test_name}" )
-# endforeach()
-
-# ##############################################################################################################
-# set (FiberTrackingSOURCES
-#   itkTrackerDirectionPickerDWITest.cxx
-#   itkTrackerDirectionPickerRSHTest.cxx
-#   itkTrackerDirectionPickerDTITest.cxx
-#   itkFiberGeneratorTest.cxx
-#   itkFiberTrackingManagerTest.cxx
-# #  itkFiberTrackingManagerTest2.cxx
-#   itkTestBoundingBox.cxx
-#   )
-
-# set(LIBS DWICore; ${ITK_LIBRARIES}; ${VTK_LIBRARIES}; )
-
-# if( "${ITK_VERSION_MAJOR}" LESS 4 )
-#   list(APPEND LIBS ITKNumerics ITKCommon ITKIO)
-# endif( "${ITK_VERSION_MAJOR}" LESS 4 )
-
-# # build test driver
-# create_test_sourcelist (FiberTrackingTest_SOURCES FiberTrackingTestsDriver.cxx ${FiberTrackingSOURCES})
-
-# # build test driver
-# add_executable (FiberTrackingTests ${FiberTrackingTest_SOURCES})
-# target_link_libraries (FiberTrackingTests ${LIBS})
-
-# # add tests
-# foreach(source IN LISTS FiberTrackingSOURCES)
-#   get_filename_component(test_name ${source} NAME_WE)
-#   add_test( ${test_name} "${EXECUTABLE_OUTPUT_PATH}/FiberTrackingTests" "${test_name}" "${TESTING_INPUT_DATA_PATH}" "${TESTING_OUTPUT_DIR}")
-# endforeach()
+itk_add_test(NAME "${TestNamePrefix}itkFiberTrackingManagerTest2"
+  COMMAND ${itk-module}UnitTestDriver itkFiberTrackingManagerTest2 )

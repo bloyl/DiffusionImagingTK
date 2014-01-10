@@ -26,6 +26,7 @@ itk_module(DiffusionImagingTK
   TEST_DEPENDS
     ITKTestKernel
     ITKMetaIO
+    ITKMesh ## this is needed so tests are correctly linked. Not sure if it should need to be in both places
   DESCRIPTION
     "${DOCUMENTATION}"
   ${_EXCLUDE}

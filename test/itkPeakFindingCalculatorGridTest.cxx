@@ -307,7 +307,7 @@ int test1()
 } // end empty namespace
 
 using namespace itk;
-int itkPeakFindingCalculatorGridTest( int argc, char * argv[] )
+int itkPeakFindingCalculatorGridTest( int, char **)
 {
 
   if ( test1() == EXIT_FAILURE )

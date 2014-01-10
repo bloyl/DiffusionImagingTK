@@ -133,7 +133,7 @@ private:
   /**
    * Computes the wigner litte d matrix element(in sp harms) for pi over 2
    */
-  static const double computeWignerLittleDPlus(int, int, int);
+  static double computeWignerLittleDPlus(int, int, int);
 
   /**Member variables*/
   // Rz(pi/2)  Ry(pi/2)

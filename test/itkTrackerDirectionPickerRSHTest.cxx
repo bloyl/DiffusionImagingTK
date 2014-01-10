@@ -377,7 +377,7 @@ testDeterminisitic()
 } // end empty namespace
 
 using namespace itk;
-int itkTrackerDirectionPickerRSHTest( int argc, char * argv[] )
+int itkTrackerDirectionPickerRSHTest( int , char ** )
 {
 
   // if ( testInitialize() )
