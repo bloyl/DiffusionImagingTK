@@ -12,7 +12,7 @@ set(${itk-module}UnitTests
   itkTrackerDirectionPickerDWITest.cxx
   itkTrackerDirectionPickerRSHTest.cxx
   itkTrackerDirectionPickerDTITest.cxx
-  # itkFiberGeneratorTest.cxx
+  itkFiberGeneratorTest.cxx
   # itkFiberTrackingManagerTest.cxx
   # itkFiberTrackingManagerTest2.cxx
 )
@@ -46,7 +46,7 @@ itk_add_test(NAME "${TestNamePrefix}itkTrackerDirectionPickerRSHTest"
   COMMAND ${itk-module}UnitTestDriver itkTrackerDirectionPickerRSHTest )
 
 itk_add_test(NAME "${TestNamePrefix}itkFiberGeneratorTest"
-  COMMAND ${itk-module}UnitTestDriver itkFiberGeneratorTest )
+  COMMAND ${itk-module}UnitTestDriver itkFiberGeneratorTest DATA{Baseline/sim_dti_orig.nii.gz} )
 
 itk_add_test(NAME "${TestNamePrefix}itkFiberTrackingManagerTest"
   COMMAND ${itk-module}UnitTestDriver itkFiberTrackingManagerTest )

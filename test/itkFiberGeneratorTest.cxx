@@ -18,16 +18,9 @@
 #include <itkImage.h>
 #include <itkImageFileReader.h>
 #include <itksys/SystemTools.hxx>
+#include <itkSpatialObjectWriter.h>
 
 #include <itkTestingMacros.h>
-
-
-#include <vtkPolyData.h>
-#include <vtkPolyDataMapper.h>
-#include <vtkActor.h>
-#include <vtkRenderWindow.h>
-#include <vtkRenderer.h>
-#include <vtkRenderWindowInteractor.h>
 
 #include <limits.h>
 #include <cmath>
@@ -43,34 +36,6 @@ typedef itk::NearestNeighborInterpolateImageFunction<DtiImageType,double>
 typedef itk::TrackerDirectionPickerDTI<DtiNNInterpType>   DtiDirPickerType;
 
 typedef itk::ImageMaskSpatialObject<3>                    MaskSpatialObjectType;
-
-void viewPolyData( vtkSmartPointer<vtkPolyData> polyData )
-{
-
-  // Setup actor and mapper
-  vtkSmartPointer<vtkPolyDataMapper> mapper = vtkSmartPointer<vtkPolyDataMapper>::New();
-#if VTK_MAJOR_VERSION <= 5
-  mapper->SetInput(polyData);
-#else
-  mapper->SetInputData(polyData);
-#endif
-  
-  vtkSmartPointer<vtkActor> actor = vtkSmartPointer<vtkActor>::New();
-  actor->SetMapper(mapper);
-  
-  // Setup render window, renderer, and interactor
-  vtkSmartPointer<vtkRenderer> renderer = vtkSmartPointer<vtkRenderer>::New();
-  vtkSmartPointer<vtkRenderWindow> renderWindow = vtkSmartPointer<vtkRenderWindow>::New();
-  renderWindow->AddRenderer(renderer);
-  vtkSmartPointer<vtkRenderWindowInteractor> renderWindowInteractor = 
-                            vtkSmartPointer<vtkRenderWindowInteractor>::New();
-  renderWindowInteractor->SetRenderWindow(renderWindow);
-  renderer->AddActor(actor);
-
-  renderWindow->Render();
-  renderWindowInteractor->Start();
-
-}
 
 int testInitialize()
 {
@@ -156,7 +121,9 @@ int test1(std::string dataFile)
   typedef typename PickerType::PointType              PointType;
   typedef typename InterpolatorType::InputImageType   ImageType;
   typedef itk::ImageFileReader< ImageType >           ReaderType;
-  typedef  itk::FiberGenerator<PickerType>            FiberGeneratorType;
+  typedef itk::FiberGenerator<PickerType>             FiberGeneratorType;
+  typedef typename FiberGeneratorType::LinePointer    FiberPointerType;
+  typedef itk::SpatialObjectWriter<3>                 WriterType;
 
   typename ReaderType::Pointer reader = ReaderType::New();
   reader->SetFileName( dataFile );
@@ -182,27 +149,32 @@ int test1(std::string dataFile)
   seed[0] = 14; seed[1] = 6;  seed[2] = 0;
 
   ftGen->GenerateFiberPoints( seed, FiberGeneratorType::ONE_DIRECTION);
-  vtkSmartPointer<vtkPolyData> polyData = ftGen->GetVTKPolyData();
-  
+  // vtkSmartPointer<vtkPolyData> polyData = ftGen->GetVTKPolyData();
+  FiberPointerType fiber = ftGen->GetFiber();
+  WriterType::Pointer writer = WriterType::New();
+  writer->SetInput(fiber);
+  writer->SetFileName("fiber1Dir.meta");
+  writer->Update();
+
   //TODO Check output
   // viewPolyData(polyData);
 
   ftGen->GenerateFiberPoints( seed, FiberGeneratorType::BOTH_DIRECTIONS);
-  polyData = ftGen->GetVTKPolyData();
+  // polyData = ftGen->GetVTKPolyData();
   
   //TODO Check output
   // viewPolyData(polyData);
 
   seed[0] = 10; seed[1] = 0;  seed[2] = 0;
   ftGen->GenerateFiberPoints( seed, FiberGeneratorType::BOTH_DIRECTIONS);
-  ftGen->AddToVTKPolyData( polyData );
+  // ftGen->AddToVTKPolyData( polyData );
 
   //TODO Check output
   // viewPolyData(polyData);
 
   ftGen->SetCurvatureThreshold(100000000000000000);
   ftGen->GenerateFiberPoints( seed, FiberGeneratorType::BOTH_DIRECTIONS);
-  ftGen->AddToVTKPolyData( polyData );
+  // ftGen->AddToVTKPolyData( polyData );
   //TODO Check output
   //viewPolyData(polyData);
   
@@ -210,105 +182,104 @@ int test1(std::string dataFile)
   return EXIT_FAILURE;
 }
 
-template< class TPickerType >
-int test2(std::string dataFile, std::string stopFile, std::string stopFile2, std::string roiFile)
-{
-  typedef TPickerType                                 PickerType;
-  typedef typename PickerType::InterpolatorType       InterpolatorType;
-  typedef typename PickerType::PointType              PointType;
-  typedef typename InterpolatorType::InputImageType   ImageType;
-  typedef itk::ImageFileReader< ImageType >           ReaderType;
+// template< class TPickerType >
+// int test2(std::string dataFile, std::string stopFile, std::string stopFile2, std::string roiFile)
+// {
+//   typedef TPickerType                                 PickerType;
+//   typedef typename PickerType::InterpolatorType       InterpolatorType;
+//   typedef typename PickerType::PointType              PointType;
+//   typedef typename InterpolatorType::InputImageType   ImageType;
+//   typedef itk::ImageFileReader< ImageType >           ReaderType;
 
-  typedef unsigned int                                LabelPixelType;
-  typedef itk::FiberGenerator<PickerType,LabelPixelType>
-                                                      FiberGeneratorType;
+//   typedef unsigned int                                LabelPixelType;
+//   typedef itk::FiberGenerator<PickerType,LabelPixelType>
+//                                                       FiberGeneratorType;
 
-//  typedef typename FiberGeneratorType::LabelVectorType   LabelVectorType;
-  typedef typename FiberGeneratorType::LabelSetType   LabelSetType;
+// //  typedef typename FiberGeneratorType::LabelVectorType   LabelVectorType;
+//   typedef typename FiberGeneratorType::LabelSetType   LabelSetType;
   
-  typedef itk::Image<LabelPixelType,3>                RoiImageType;
-  typedef itk::ImageFileReader< RoiImageType >        RoiReaderType;
+//   typedef itk::Image<LabelPixelType,3>                RoiImageType;
+//   typedef itk::ImageFileReader< RoiImageType >        RoiReaderType;
 
-  typename ReaderType::Pointer reader = ReaderType::New();
-  reader->SetFileName( dataFile );
-  reader->Update();
+//   typename ReaderType::Pointer reader = ReaderType::New();
+//   reader->SetFileName( dataFile );
+//   reader->Update();
   
-  typename RoiReaderType::Pointer roiReader = RoiReaderType::New();
-  roiReader->SetFileName( roiFile );
-  roiReader->Update();
+//   typename RoiReaderType::Pointer roiReader = RoiReaderType::New();
+//   roiReader->SetFileName( roiFile );
+//   roiReader->Update();
   
-  typename InterpolatorType::Pointer interp = InterpolatorType::New();
-  interp->SetInputImage(reader->GetOutput());
+//   typename InterpolatorType::Pointer interp = InterpolatorType::New();
+//   interp->SetInputImage(reader->GetOutput());
 
-  //Load the mask File...
-  MaskSpatialObjectType::Pointer mask = loadStoppingMask(stopFile,0.1,1.1);
-  MaskSpatialObjectType::Pointer mask2 = loadStoppingMask(stopFile2,0.1,1.1);
+//   //Load the mask File...
+//   MaskSpatialObjectType::Pointer mask = loadStoppingMask(stopFile,0.1,1.1);
+//   MaskSpatialObjectType::Pointer mask2 = loadStoppingMask(stopFile2,0.1,1.1);
 
-  typename FiberGeneratorType::Pointer ftGen = FiberGeneratorType::New();
+//   typename FiberGeneratorType::Pointer ftGen = FiberGeneratorType::New();
   
-  typename PickerType::Pointer dirPicker = PickerType::New();
-  dirPicker->SetInterpolator(interp);
-  // dirPicker->UseProbabilisticMethod();
+//   typename PickerType::Pointer dirPicker = PickerType::New();
+//   dirPicker->SetInterpolator(interp);
+//   // dirPicker->UseProbabilisticMethod();
 
-  //initialize the generator;
-  ftGen->SetDirectionPicker(dirPicker);
-  ftGen->SetStepLength(0.2);
-  ftGen->SetCurvatureThreshold(3.44);
+//   //initialize the generator;
+//   ftGen->SetDirectionPicker(dirPicker);
+//   ftGen->SetStepLength(0.2);
+//   ftGen->SetCurvatureThreshold(3.44);
 
-  RoiImageType::Pointer roiIm = roiReader->GetOutput();
+//   RoiImageType::Pointer roiIm = roiReader->GetOutput();
 
-  ftGen->SetROIImage(roiIm);
-  TEST_SET_GET(roiIm, ftGen->GetROIImage());
+//   ftGen->SetROIImage(roiIm);
+//   TEST_SET_GET(roiIm, ftGen->GetROIImage());
 
-  ftGen->Initialize();
+//   ftGen->Initialize();
   
-  PointType seed;
-  seed[0] = 14; seed[1] = 6;  seed[2] = 0;
+//   PointType seed;
+//   seed[0] = 14; seed[1] = 6;  seed[2] = 0;
 
-  ftGen->GenerateFiberPoints( seed, FiberGeneratorType::BOTH_DIRECTIONS);
-  vtkSmartPointer<vtkPolyData> polyData = ftGen->GetVTKPolyData();
-//  typename LabelVectorType::ConstPointer traversedRois = ftGen->GetTraversedROIs();
-  LabelSetType traversedRois = ftGen->GetTraversedROIs();
+//   ftGen->GenerateFiberPoints( seed, FiberGeneratorType::BOTH_DIRECTIONS);
+//   vtkSmartPointer<vtkPolyData> polyData = ftGen->GetVTKPolyData();
+// //  typename LabelVectorType::ConstPointer traversedRois = ftGen->GetTraversedROIs();
+//   LabelSetType traversedRois = ftGen->GetTraversedROIs();
   
-  //TODO Check output
-  std::cout << ftGen->GetFiberLength() << std::endl;
-  printRois(traversedRois);
-  //viewPolyData(polyData);
+//   //TODO Check output
+//   std::cout << ftGen->GetFiberLength() << std::endl;
+//   printRois(traversedRois);
+//   //viewPolyData(polyData);
 
-  ftGen->AddStoppingCriteriaSpatialObject(mask.GetPointer());
-  ftGen->GenerateFiberPoints( seed, FiberGeneratorType::BOTH_DIRECTIONS);
-  polyData = ftGen->GetVTKPolyData();
-  traversedRois = ftGen->GetTraversedROIs();
+//   ftGen->AddStoppingCriteriaSpatialObject(mask.GetPointer());
+//   ftGen->GenerateFiberPoints( seed, FiberGeneratorType::BOTH_DIRECTIONS);
+//   polyData = ftGen->GetVTKPolyData();
+//   traversedRois = ftGen->GetTraversedROIs();
   
-  //TODO Check output
-  std::cout << ftGen->GetFiberLength() << std::endl;
-  printRois(traversedRois);
-  //viewPolyData(polyData);
+//   //TODO Check output
+//   std::cout << ftGen->GetFiberLength() << std::endl;
+//   printRois(traversedRois);
+//   //viewPolyData(polyData);
 
-  ftGen->AddStoppingCriteriaSpatialObject(mask2.GetPointer());
-  ftGen->GenerateFiberPoints( seed, FiberGeneratorType::BOTH_DIRECTIONS);
-  polyData = ftGen->GetVTKPolyData();
-  traversedRois = ftGen->GetTraversedROIs();
+//   ftGen->AddStoppingCriteriaSpatialObject(mask2.GetPointer());
+//   ftGen->GenerateFiberPoints( seed, FiberGeneratorType::BOTH_DIRECTIONS);
+//   polyData = ftGen->GetVTKPolyData();
+//   traversedRois = ftGen->GetTraversedROIs();
   
-  //TODO Check output
-  std::cout << ftGen->GetFiberLength() << std::endl;
-  printRois(traversedRois);
-  //viewPolyData(polyData);
+//   //TODO Check output
+//   std::cout << ftGen->GetFiberLength() << std::endl;
+//   printRois(traversedRois);
+//   //viewPolyData(polyData);
 
-  return EXIT_FAILURE;
-}
+//   return EXIT_FAILURE;
+// }
 
 
 } //End empty Namespace
 
 using namespace itk;
-int itkFiberGeneratorTest( int argc, char * argv[] )
+int itkFiberGeneratorTest( int , char * argv[] )
 {
-
-  std::string dtiFile   =  std::string(argv[1])+"sim_dti_orig.nii";
-  std::string maskFile  =  std::string(argv[1])+"sim_dti_orig-stop1.nii.gz";
-  std::string maskFile2 =  std::string(argv[1])+"sim_dti_orig-stop2.nii.gz";
-  std::string roiFile   =  std::string(argv[1])+"sim_dti_orig-ROIs.nii.gz";
+  std::string dtiFile   =  std::string(argv[1]);
+  // std::string maskFile  =  std::string(argv[1])+"sim_dti_orig-stop1.nii.gz";
+  // std::string maskFile2 =  std::string(argv[1])+"sim_dti_orig-stop2.nii.gz";
+  // std::string roiFile   =  std::string(argv[1])+"sim_dti_orig-ROIs.nii.gz";
 
   test1<DtiDirPickerType>(dtiFile);
 //  test2<DtiDirPickerType>(dtiFile,maskFile,maskFile2,roiFile);
