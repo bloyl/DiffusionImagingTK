@@ -280,7 +280,7 @@ double
 FiberGenerator<TDirPicker,TLabelType>
 ::GetFiberLength( ) const
 {
-  return (this->m_StepLength * this->m_Points->GetNumberOfPoints());
+  return (this->m_StepLength * this->m_Points.size());
 }
 
 }// end namespace itk

@@ -32,9 +32,7 @@ How to Cite
 
 If you find this software useful in your work please cite the following:
 
-1)
-2)
-3)
+1.
 
 Author
 ======

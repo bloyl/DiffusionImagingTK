@@ -53,7 +53,7 @@ public:
 
   enum StartDirectionChoice {ONE_DIRECTION, BOTH_DIRECTIONS};
 
-  /** Typedefs for storing ROI masks (Could probbaly be protected) */
+  /** Typedefs for storing ROI masks (Could probaly be protected) */
   typedef GroupSpatialObject<3>                             StoppingMaskType;
   typedef StoppingMaskType::Pointer                         StoppingMaskPointer;
   typedef StoppingMaskType::ConstPointer                    StoppingMaskConstPointer;
