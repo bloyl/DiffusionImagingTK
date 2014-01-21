@@ -58,5 +58,5 @@ itk_add_test(NAME "${TestNamePrefix}itkFiberTrackingManagerTest"
     "sim_dti_orig-fibers.meta"
   )
 
-itk_add_test(NAME "${TestNamePrefix}itkFiberTrackingManagerTest2"
-  COMMAND ${itk-module}UnitTestDriver itkFiberTrackingManagerTest2 )
+# itk_add_test(NAME "${TestNamePrefix}itkFiberTrackingManagerTest2"
+#   COMMAND ${itk-module}UnitTestDriver itkFiberTrackingManagerTest2 )

@@ -47,6 +47,8 @@ int test( std::string dataFile, std::string roiFile, std::string stopFile,
   typedef typename FTManagerType::VectorOfLabelSetsConstPointer
                                                       VectorOfLabelSetsConstPointer;
 
+  typedef typename FTManagerType::GroupSpatialObjectType
+                                                      GroupSpatialObjectType;
   typedef typename FTManagerType::GroupSpatialObjectPointer
                                                       GroupSpatialObjectPointer;
   typedef typename FTManagerType::GroupSpatialObjectConstPointer
@@ -106,7 +108,8 @@ int test( std::string dataFile, std::string roiFile, std::string stopFile,
     ftManager->AddStoppingCriteria(stopReader->GetOutput(),0.0,0.0);
     ftManager->SetROIImage(roiReader->GetOutput());
 
-    ftManager->SetNumberOfFibersToKeep(500);
+//    ftManager->SetNumberOfFibersToKeep(500);
+    ftManager->SetNumberOfFibersToKeep(5);
     ftManager->SetMinimumFiberLength(10.0);
     
     ftManager->SetDirectionPicker( dirPicker );
@@ -124,6 +127,20 @@ int test( std::string dataFile, std::string roiFile, std::string stopFile,
     writer->SetFileName(outFiberFile);
     writer->Update();
 
+    std::cout << "number of Fibers : " << keptFibers->GetNumberOfChildren() << std::endl;
+    // std::cout << keptFibers << std::endl;
+  
+    typename GroupSpatialObjectType::ChildrenListType * childrenList = keptFibers->GetChildren();
+    std::cout << "fibers has " << childrenList->size() << " child" << std::endl;
+    typename GroupSpatialObjectType::ChildrenListType::const_iterator it = childrenList->begin();
+    while(it != childrenList->end())
+    {
+      std::cout << "Name of the child of the object 1: ";
+      std::cout << (*it)->GetProperty()->GetName() << std::endl;
+      std::cout << (*it) << std::endl;
+      it++;
+    }
+    delete childrenList;
     
   }
   catch( itk::ExceptionObject & err )
@@ -150,10 +167,10 @@ int itkFiberTrackingManagerTest( int, char * argv[] )
 
 //  test<DtiDirPickerType>(dtiFile,roisFile,dtiStop1,outFiberFile);
   test<DtiDirPickerType>(dtiFile,seedTestFile,dtiStop1,outFiberFile,false);
-  test<DtiDirPickerType>(dtiFile,seedTestFile,dtiStop1,outFiberFile,true);
+  // test<DtiDirPickerType>(dtiFile,seedTestFile,dtiStop1,outFiberFile,true);
 
-  test<DtiDirPickerType>(dtiFile,singleSeedTestFile,dtiStop1,outFiberFile,false);
-  test<DtiDirPickerType>(dtiFile,singleSeedTestFile,dtiStop1,outFiberFile,true);
+  // test<DtiDirPickerType>(dtiFile,singleSeedTestFile,dtiStop1,outFiberFile,false);
+  // test<DtiDirPickerType>(dtiFile,singleSeedTestFile,dtiStop1,outFiberFile,true);
 
   std::cout << "*************************************************************************************" << std::endl
             << "***  NOT AN ACTUAL TEST NO COMPARISION MADE TO RESULTS  *****************************" << std::endl

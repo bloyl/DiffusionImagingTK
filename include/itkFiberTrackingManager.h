@@ -18,10 +18,6 @@
 #include <itkGroupSpatialObject.h>
 #include <itkPointSet.h>
 
-// #include <vtkSmartPointer.h>
-// #include <vtkPolyLine.h>
-// #include <vtkPolyData.h>
-
 #include <itkFiberGenerator.h>
 
 namespace itk
@@ -57,6 +53,7 @@ public:
 
   typedef FiberGenerator<DirectionPickerType, TLabelType>   FiberGeneratorType;
   typedef typename FiberGeneratorType::Pointer              FiberGeneratorPointer;
+  typedef typename FiberGeneratorType::LineType             FiberType;
 
   typedef typename FiberGeneratorType::LabelSetType         LabelSetType;
   typedef itk::VectorContainer<unsigned int,LabelSetType>   VectorOfLabelSetsType;

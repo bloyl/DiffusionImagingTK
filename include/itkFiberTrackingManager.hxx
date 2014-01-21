@@ -25,8 +25,6 @@ FiberTrackingManager<TDirPicker,TLabelType>
   this->m_SeedMasks       = GroupSpatialObjectType::New();
   this->m_SeedMasks->SetBoundingBoxChildrenDepth(9999);
   this->m_SeedPoints      = PointSetType::New();
-  // this->m_Fibers          = vtkSmartPointer<vtkPolyData>::New();
-  // this->m_RejectedFibers  = vtkSmartPointer<vtkPolyData>::New();
   this->m_Fibers          = GroupSpatialObjectType::New();
   this->m_RejectedFibers  = GroupSpatialObjectType::New();
   this->m_FibersROIs      = VectorOfLabelSetsType::New();
@@ -178,8 +176,9 @@ FiberTrackingManager<TDirPicker,TLabelType>
       this->m_SeedPoints->SetPointData(genCounter,1);
       
       //Add fiber to output
-      // ftGen->AddToVTKPolyData(this->m_Fibers);
-      this->m_Fibers->AddSpatialObject(ftGen->GetFiber());
+      typename FiberType::Pointer fiber = ftGen->GetFiber();
+      fiber->SetId(this->m_Fibers->GetNumberOfChildren()+1);
+      this->m_Fibers->AddSpatialObject(fiber);
       this->m_FibersROIs->InsertElement(keptFibers,fibROIs);
       keptFibers++;
       if (keptFibers >= keepNFibers)
@@ -192,7 +191,6 @@ FiberTrackingManager<TDirPicker,TLabelType>
       this->m_SeedPoints->SetPoint(genCounter,seedPoint);
       this->m_SeedPoints->SetPointData(genCounter,0);
       this->m_RejectedFibers->AddSpatialObject(ftGen->GetFiber());
-      // ftGen->AddToVTKPolyData(this->m_RejectedFibers);
     }
   }
 }

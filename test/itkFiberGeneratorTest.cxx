@@ -156,27 +156,29 @@ int test1(std::string dataFile)
   writer->SetFileName("fiber1Dir.meta");
   writer->Update();
 
-  //TODO Check output
-  // viewPolyData(polyData);
-
-  ftGen->GenerateFiberPoints( seed, FiberGeneratorType::BOTH_DIRECTIONS);
-  // polyData = ftGen->GetVTKPolyData();
+  std::cout << fiber << std::endl;
   
-  //TODO Check output
-  // viewPolyData(polyData);
+  // //TODO Check output
+  // // viewPolyData(polyData);
 
-  seed[0] = 10; seed[1] = 0;  seed[2] = 0;
-  ftGen->GenerateFiberPoints( seed, FiberGeneratorType::BOTH_DIRECTIONS);
-  // ftGen->AddToVTKPolyData( polyData );
+  // ftGen->GenerateFiberPoints( seed, FiberGeneratorType::BOTH_DIRECTIONS);
+  // // polyData = ftGen->GetVTKPolyData();
+  
+  // //TODO Check output
+  // // viewPolyData(polyData);
 
-  //TODO Check output
-  // viewPolyData(polyData);
+  // seed[0] = 10; seed[1] = 0;  seed[2] = 0;
+  // ftGen->GenerateFiberPoints( seed, FiberGeneratorType::BOTH_DIRECTIONS);
+  // // ftGen->AddToVTKPolyData( polyData );
 
-  ftGen->SetCurvatureThreshold(100000000000000000);
-  ftGen->GenerateFiberPoints( seed, FiberGeneratorType::BOTH_DIRECTIONS);
-  // ftGen->AddToVTKPolyData( polyData );
-  //TODO Check output
-  //viewPolyData(polyData);
+  // //TODO Check output
+  // // viewPolyData(polyData);
+
+  // ftGen->SetCurvatureThreshold(100000000000000000);
+  // ftGen->GenerateFiberPoints( seed, FiberGeneratorType::BOTH_DIRECTIONS);
+  // // ftGen->AddToVTKPolyData( polyData );
+  // //TODO Check output
+  // //viewPolyData(polyData);
   
 
   return EXIT_FAILURE;
