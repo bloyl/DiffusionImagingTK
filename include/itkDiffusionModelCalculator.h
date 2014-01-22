@@ -64,6 +64,9 @@ public:
   typedef VectorContainer< unsigned int,
                                 GradientDirectionType >     GradientDirectionContainerType;
 
+  /** Enums for different reconstructions we know */
+  typedef  enum { DT_OLS, DT_WLS, DT_WLSBOOT }              TensorReconEnumType;
+  typedef  enum { RSH_ADC, RSH_ODF, RSH_CSAODF }            RSHReconEnumType;
 
   //****************************************************************************
   //Public METHODS  
@@ -79,14 +82,29 @@ public:
   /** Get the Gradient Direction Container */
   itkGetConstObjectMacro(GradientDirectionContainer, GradientDirectionContainerType);
 
+  /** Initialize the internal variables for different model estimation */
   void InitializeTensorFitting();
   void InitializeRSHFitting(PrecisionType);
 
+  /** Set/Get the TensorReconMethod
+   *   Controls method used by ComputeTensor
+   */
+  itkSetMacro(TensorReconMethod, TensorReconEnumType);
+  itkGetConstMacro(TensorReconMethod, TensorReconEnumType);
+
+  /** Set/Get the RSHReconMethod
+   *   Controls method used by ComputeRSH
+   */
+  itkSetMacro(RSHReconMethod, RSHReconEnumType);
+  itkGetConstMacro(RSHReconMethod, RSHReconEnumType);
+
   //Figure out how to return residuals...
+  DtType ComputeTensor(DWIPixelType, bool) const;
   DtType ComputeTensorOLS(DWIPixelType, bool) const;
   DtType ComputeTensorWLS(DWIPixelType, bool) const;
   DtType ComputeTensorWLS_residualBoot(DWIPixelType, bool) const;
 
+  RshType ComputeRSH(DWIPixelType ) const;
   RshType ComputeRSH_ADC(DWIPixelType ) const;
   RshType ComputeRSH_ODF(DWIPixelType ) const;
   RshType ComputeRSH_CSAODF(DWIPixelType, PrecisionType, PrecisionType ) const;
@@ -133,6 +151,9 @@ private:
 
   /* Container to hold gradient directions */
   typename GradientDirectionContainerType::Pointer m_GradientDirectionContainer;
+
+  TensorReconEnumType                               m_TensorReconMethod;
+  RSHReconEnumType                                  m_RSHReconMethod;
 
 };
 

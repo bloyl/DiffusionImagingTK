@@ -34,6 +34,8 @@ DiffusionModelCalculator<TDWIPixelType, TPrecisionType, TOutputOrder>
   
   m_BeltramiLambda = 0.0; //By default use no Regularization.
 
+  m_TensorReconMethod = DT_OLS;
+  m_RSHReconMethod    = RSH_CSAODF;
 }
 
 template < class TDWIPixelType, class TPrecisionType, unsigned int TOutputOrder >
@@ -131,6 +133,29 @@ DiffusionModelCalculator<TDWIPixelType, TPrecisionType, TOutputOrder>
   return dt;
 }
 
+template < class TDWIPixelType, class TPrecisionType, unsigned int TOutputOrder >
+typename DiffusionModelCalculator<TDWIPixelType, TPrecisionType, TOutputOrder>::DtType
+DiffusionModelCalculator<TDWIPixelType, TPrecisionType, TOutputOrder>
+::ComputeTensor(DWIPixelType rawDWI, bool forceSPD) const
+{
+  DtType retVal;
+  switch( m_TensorReconMethod )
+  {
+    case DT_OLS:
+      retVal = ComputeTensorOLS(rawDWI,forceSPD);
+      break;
+    case DT_WLS:
+      retVal = ComputeTensorWLS(rawDWI,forceSPD);
+      break;
+    case DT_WLSBOOT:
+      retVal = ComputeTensorWLS_residualBoot(rawDWI,forceSPD);
+      break;
+    default:
+      itkExceptionMacro( << "unrecognized Tensor Recon : " << m_TensorReconMethod << " : " << DT_OLS)
+  }
+  //Should never reach here.
+  return retVal;
+}
 
 template < class TDWIPixelType, class TPrecisionType, unsigned int TOutputOrder >
 typename DiffusionModelCalculator<TDWIPixelType, TPrecisionType, TOutputOrder>::DtType
@@ -383,6 +408,29 @@ DiffusionModelCalculator<TDWIPixelType, TPrecisionType, TOutputOrder>
     vnl_svd<double> solver( basis2 + L2 );
     m_RshBasisPseudoInverse = solver.inverse() * m_RshBasis.transpose();
   }  
+}
+
+template < class TDWIPixelType, class TPrecisionType, unsigned int TOutputOrder >
+typename DiffusionModelCalculator<TDWIPixelType, TPrecisionType, TOutputOrder>::RshType
+DiffusionModelCalculator<TDWIPixelType, TPrecisionType, TOutputOrder>
+::ComputeRSH(DWIPixelType rawDWI) const
+{
+  RshType retVal;
+  switch( m_RSHReconMethod )
+  {
+    case RSH_ADC:
+      retVal = ComputeRSH_ADC(rawDWI);
+      break;
+    case RSH_ODF:
+      retVal = ComputeRSH_ODF(rawDWI);
+      break;
+    case RSH_CSAODF:
+      retVal = ComputeRSH_CSAODF(rawDWI);
+      break;
+    default:
+      itkExceptionMacro( << "unrecognized RSH Recon")
+  }
+  return retVal;
 }
 
 template < class TDWIPixelType, class TPrecisionType, unsigned int TOutputOrder >

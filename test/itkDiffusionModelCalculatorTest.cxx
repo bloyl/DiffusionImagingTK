@@ -1,11 +1,8 @@
 
-
-
 #include <itkSymRealSphericalHarmonicRep.h>
 #include <itkDiffusionModelCalculator.h>
 #include <itkPeakFindingCalculatorGrid.h>
 #include <itkPeakFindingCalculator.h>
-
 
 #include <itkTimeProbe.h>
 #include <itkVariableLengthVector.h>
@@ -25,7 +22,7 @@ typename GradientDirectionContainerType::Pointer generateGradientDirections( int
   if (resolution == -1)
   {
     //Use the BBL stuff
-      const unsigned int numberOfGradientImages = 67; // The bbl set!!!
+    const unsigned int numberOfGradientImages = 67; // The bbl set!!!
 
     //Set up Gradient Contatiner...
     // typedef typename GradientDirectionContainerType::Element       GradientDirectionType;

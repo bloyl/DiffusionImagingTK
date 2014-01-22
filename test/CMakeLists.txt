@@ -15,6 +15,8 @@ set(${itk-module}UnitTests
   itkFiberGeneratorTest.cxx
   itkFiberTrackingManagerTest.cxx
   # itkFiberTrackingManagerTest2.cxx
+  itkDTIReconImageFilterTest.cxx
+  itkRSHReconImageFilterTest.cxx
 )
 
 CreateTestDriver(${itk-module}Unit  "${${itk-module}-Test_LIBRARIES}" "${${itk-module}UnitTests}")
@@ -57,6 +59,24 @@ itk_add_test(NAME "${TestNamePrefix}itkFiberTrackingManagerTest"
     DATA{Baseline/DWIS_dti-scheme_singleSeedTest_mask.nii.gz}
     "sim_dti_orig-fibers.meta"
   )
+
+itk_add_test(NAME "${TestNamePrefix}itkDTIReconImageFilterTest"
+  COMMAND ${itk-module}UnitTestDriver itkDTIReconImageFilterTest
+    DATA{Baseline/template_dwi.nii.gz}
+    DATA{Baseline/template_dwi.bvec}
+    DATA{Baseline/template_dwi.bval}
+    DATA{Baseline/template_dwi_mask.nii.gz}
+    olsTD.nii.gz
+   )
+
+itk_add_test(NAME "${TestNamePrefix}itkRSHReconImageFilterTest"
+  COMMAND ${itk-module}UnitTestDriver itkRSHReconImageFilterTest
+    DATA{Baseline/template_dwi.nii.gz}
+    DATA{Baseline/template_dwi.bvec}
+    DATA{Baseline/template_dwi.bval}
+    DATA{Baseline/template_dwi_mask.nii.gz}
+    odf.nii.gz
+   )
 
 # itk_add_test(NAME "${TestNamePrefix}itkFiberTrackingManagerTest2"
 #   COMMAND ${itk-module}UnitTestDriver itkFiberTrackingManagerTest2 )
