@@ -66,7 +66,7 @@ PeakFindingCalculatorGrid< TPixelType >
   unsigned int numPoints = m_SimplexMesh->GetPoints()->Size();
 
   PeakDirectionType           gradDir;
-  SimplexMeshType::PointType  point(0);
+  SimplexMeshType::PointType  point;
 
   m_ListOfNeighbors.clear();
   m_SampleDirections.clear();

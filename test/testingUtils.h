@@ -12,7 +12,7 @@ template < class DwiImageType4D, class DwiImageType >
 void convertDWIimage(typename DwiImageType4D::Pointer inp4d, typename DwiImageType::Pointer outputIm );
 
 template <class GradientDirectionContainerType>
-typename GradientDirectionContainerType::Pointer generateGradientDirections(unsigned int resolution);
+typename GradientDirectionContainerType::Pointer generateGradientDirections(int resolution);
 
 bool areEqual(double x, double y, double percision);
 
