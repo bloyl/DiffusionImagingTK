@@ -9,15 +9,16 @@
  */
 
 #include <itkSymRealSphericalHarmonicRep.h>
-#include <limits.h>
-#include <cmath>
-#include <stdio.h>
 
 #include <itkMesh.h>
 #include <itkRegularSphereMeshSource.h>
 #include <itkDefaultDynamicMeshTraits.h>
+#include <iomanip>      // std::setprecision
 
 #include <itkTestingMacros.h>
+#include "testingUtils.h"
+
+using namespace DiffusionImagingTK_testing;
 
 namespace
 { //Empty Namespace
@@ -34,75 +35,6 @@ const double ph1 = 5.231;
 const double ph2 = 1.321;
 double percision  = 1e-6;
 bool passed = true;
-
-bool areEqual(double x, double y)
-{
-  //Compare binanry significant and eponent
-  // x = xSig * 2^xExp
-  double xSig,ySig;
-  int xExp,yExp;
-
-  xSig = frexp(x , &xExp);
-  ySig = frexp(y , &yExp);
-
-  if (xExp != yExp)
-  {
-    std::cerr << "areEqual exponents differ : " << xExp << " : " << yExp << std::endl;
-    return false;
-  }
-
-  if ( vcl_abs(xSig - ySig) > percision )
-  {
-    std::cerr << xSig << " : " << ySig << std::endl;
-    std::cerr << vcl_abs(xSig - ySig) << std::endl;
-    return false;
-  }
-  return true;
-}
-
-//GradientDirectionContainerType
-template <class GradientDirectionContainerType>
-typename GradientDirectionContainerType::Pointer generateGradientDirections(unsigned int resolution)
-{
-  typedef itk::DefaultDynamicMeshTraits<double, 3, 3, double, double, double> MeshTraits;
-  typedef itk::Mesh<double,3,MeshTraits> TriangleMeshType;
-
-  // declare triangle mesh source
-  typedef itk::RegularSphereMeshSource<TriangleMeshType>  SphereMeshSourceType;
-  typedef SphereMeshSourceType::PointType PointType;
-  typedef SphereMeshSourceType::VectorType VectorType;
-
-  SphereMeshSourceType::Pointer  mySphereMeshSource = SphereMeshSourceType::New();
-  PointType center; center.Fill(0);
-  PointType::ValueType scaleInit[3] = {1,1,1};
-  VectorType scale = scaleInit;
-
-  mySphereMeshSource->SetCenter(center);
-  mySphereMeshSource->SetResolution(resolution); 
-  mySphereMeshSource->SetScale(scale);
-  mySphereMeshSource->Update();
-  
-  TriangleMeshType::Pointer sphere = mySphereMeshSource->GetOutput();
-
-  unsigned int numPoints = sphere->GetPoints()->Size();
-  PointType  point(0);
-
-  typename GradientDirectionContainerType::Pointer gradCont = GradientDirectionContainerType::New();
-  typename GradientDirectionContainerType::Element gradDir;
-
-  gradCont->Reserve(numPoints);
-  for (unsigned int pointIndex = 0; pointIndex < numPoints; pointIndex++)
-  {
-    sphere->GetPoint(pointIndex,&point);
-    gradDir[0] = point[0]; gradDir[1] = point[1]; gradDir[2] = point[2];
-    gradDir.normalize();
-    gradCont->InsertElement(pointIndex,gradDir);
-  }
-
-  return gradCont;
-}
-
-//------------------------------------------------------------------------------------------------------------
 
 int testIndexing()
 {
@@ -583,7 +515,6 @@ int testEvaluation()
 int testCurvatureComputation()
 {
 
-
   typedef itk::SymRealSphericalHarmonicRep<double,8>    PixelType2;
   typedef PixelType2::GradientDirectionType             GradType;
   typedef PixelType2::GradientDirectionContainerType    GradientDirectionContainerType;
@@ -654,11 +585,26 @@ int testCurvatureComputation()
   //first investigate the theta dependence...
   unsigned nPnts = grads->Size();
 
+  //Expected results!
   typedef vnl_vector< double>                      ValuesType;
-  ValuesType k1CurvaturesDir(nPnts);
-  ValuesType k2CurvaturesDir(nPnts);
-  ValuesType k1CurvaturesAng(nPnts);
-  ValuesType k2CurvaturesAng(nPnts);
+  ValuesType k1Horz(3);
+  ValuesType k2Horz(3);
+  k1Horz[0] = 242761; k2Horz[0] = -5578.72; 
+  k1Horz[1] = 2.14913e+06; k2Horz[1] = 133726; 
+  k1Horz[2] = 11.1344; k2Horz[2] = 4.34043; 
+
+  ValuesType k1Vert(3);
+  ValuesType k2Vert(3);
+  k1Vert[0] = 703938; k2Vert[0] = 68650.4; 
+  k1Vert[1] = 10.94255064; k2Vert[1] = 4.275313493; 
+  k1Vert[2] = 1378342.339; k2Vert[2] = 93513.16603; 
+
+  ValuesType k1Cross(3);
+  ValuesType k2Cross(3);
+  k1Cross[0] = 5552557.562; k2Cross[0] = 87768.81348; 
+  k1Cross[1] = 27.57195341; k2Cross[1] = 11.06971776; 
+  k1Cross[2] = 26.79687308; k2Cross[2] = 10.70384646;
+
   double tmp1,tmp2,k1,k2;
   GradType grad;
 
@@ -672,29 +618,89 @@ int testCurvatureComputation()
     double phi   = atan2(grad[1],grad[0]); // atan2(y,x) = atan(y/x);
     
     odf_i.ComputeCurvatures(theta,phi,tmp1,tmp2,k1,k2);
-    k1CurvaturesAng[i] = k1 * odf_i[0] * vcl_sqrt( 1.0 / (4*vnl_math::pi) );
-    k2CurvaturesAng[i] = k2 * odf_i[0] * vcl_sqrt( 1.0 / (4*vnl_math::pi) );
+    // k1CurvaturesAng[i] = k1 * odf_i[0] * vcl_sqrt( 1.0 / (4*vnl_math::pi) );
+    // k2CurvaturesAng[i] = k2 * odf_i[0] * vcl_sqrt( 1.0 / (4*vnl_math::pi) );
     if (isnan(k1))
     {
       std::cout << "NANs encountered" << std::endl;
       std::cout << grad << " - " << k1 << " " << k2 << std::endl;
       return EXIT_FAILURE;
     }
-    if (! (areEqual(k1,k2) && areEqual(k1, (4*vnl_math::pi) ) ) )
+    if (! (areEqual(k1,k2,percision) && areEqual(k1, (4*vnl_math::pi),percision ) ) )
     {
       std::cout << "Error curvatures are incorrect" << std::endl;
       std::cout << grad << " - " << k1 << " " << k2 << std::endl;
       return EXIT_FAILURE;      
     }
-    std::cout << grad << " - " << k1 << " " << k2 << std::endl;
+    // std::cout << grad << " - " << k1 << " " << k2 << std::endl;
+  }
+  std::cout << "   Isotropic odf - Passed" << std::endl;
+  
+  GradientDirectionContainerType::Pointer cardinalGrads = GradientDirectionContainerType::New();
 
+  grad[0] = 0; grad[1] = 0; grad[2] = 1;
+  cardinalGrads->InsertElement(0,grad);
+
+  grad[0] = 0; grad[1] = 1; grad[2] = 0;
+  cardinalGrads->InsertElement(1,grad);
+
+  grad[0] = 1; grad[1] = 0; grad[2] = 0;
+  cardinalGrads->InsertElement(2,grad);
+
+  for( unsigned i = 0;i<3;++i)
+  {
+    grad = cardinalGrads->ElementAt(i);
+    double theta = acos(grad[2]);
+    double phi   = atan2(grad[1],grad[0]); // atan2(y,x) = atan(y/x);
+    
+    //Test horizontal 
+    odf_h.ComputeCurvatures(theta,phi,tmp1,tmp2,k1,k2);
+    if (isnan(k1))
+    {
+      std::cout << "NANs encountered" << std::endl;
+      std::cout << grad << " - " << k1 << " " << k2 << std::endl;
+      return EXIT_FAILURE;
+    }
+    if ( !areEqual(k1,k1Horz[i],percision) || !areEqual(k2,k2Horz[i],percision) )
+    {
+      std::cout << "Error Horizontal curvatures are incorrect" << std::endl;
+      std::cout << grad << " - " << std::setprecision(10) << k1 << " " << k2 << std::endl;
+      std::cout << " ------ expecting : " << std::setprecision(10) << k1Horz[i] << " " << k2Horz[i] << std::endl;
+      return EXIT_FAILURE;      
+    }
+
+    odf_v.ComputeCurvatures(theta,phi,tmp1,tmp2,k1,k2);
+    if (isnan(k1))
+    {
+      std::cout << "NANs encountered" << std::endl;
+      std::cout << grad << " - " << k1 << " " << k2 << std::endl;
+      return EXIT_FAILURE;
+    }
+    if ( !areEqual(k1,k1Vert[i],percision) || !areEqual(k2,k2Vert[i],percision) )
+    {
+      std::cout << "Error Vertical curvatures are incorrect" << std::endl;
+      std::cout << grad << " - " << std::setprecision(10) << k1 << " " << k2 << std::endl;
+      std::cout << " ------ expecting : " << std::setprecision(10) << k1Vert[i] << " " << k2Vert[i] << std::endl;
+      return EXIT_FAILURE;      
+    }
+
+    odf_c.ComputeCurvatures(theta,phi,tmp1,tmp2,k1,k2);
+    if (isnan(k1))
+    {
+      std::cout << "NANs encountered" << std::endl;
+      std::cout << grad << " - " << k1 << " " << k2 << std::endl;
+      return EXIT_FAILURE;
+    }
+    if ( !areEqual(k1,k1Cross[i],percision) || !areEqual(k2,k2Cross[i],percision) )
+    {
+      std::cout << "Error Crossing curvatures are incorrect" << std::endl;
+      std::cout << grad << " - " << std::setprecision(10) << k1 << " " << k2 << std::endl;
+      std::cout << " ------ expecting : " << std::setprecision(10) << k1Cross[i] << " " << k2Cross[i] << std::endl;
+      return EXIT_FAILURE;      
+    }
   }
 
-  std::cout << "*************************************************************************************" << std::endl
-            << "***  testCurvatureComputation NOT AN ACTUAL TEST NO COMPARISION MADE TO RESULTS  *****************************" << std::endl
-            << "*************************************************************************************" << std::endl;
-
-  return EXIT_FAILURE;
+  return EXIT_SUCCESS;
 }
 
 }// end EmptyNamespace

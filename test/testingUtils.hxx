@@ -3,8 +3,57 @@
 #ifndef __testingUtils_hxx
 #define __testingUtils_hxx
 
+#include <itkDefaultDynamicMeshTraits.h>
+#include <itkMesh.h>
+#include <itkRegularSphereMeshSource.h>
+#include <iostream>
+#include <fstream>
+#include <itkImageRegionIteratorWithIndex.h>
+
 namespace DiffusionImagingTK_testing
 {
+
+//GradientDirectionContainerType
+template <class GradientDirectionContainerType>
+typename GradientDirectionContainerType::Pointer generateGradientDirections(unsigned int resolution)
+{
+  typedef itk::DefaultDynamicMeshTraits<double, 3, 3, double, double, double> MeshTraits;
+  typedef itk::Mesh<double,3,MeshTraits> TriangleMeshType;
+
+  // declare triangle mesh source
+  typedef itk::RegularSphereMeshSource<TriangleMeshType>  SphereMeshSourceType;
+  typedef SphereMeshSourceType::PointType PointType;
+  typedef SphereMeshSourceType::VectorType VectorType;
+
+  SphereMeshSourceType::Pointer  mySphereMeshSource = SphereMeshSourceType::New();
+  PointType center; center.Fill(0);
+  PointType::ValueType scaleInit[3] = {1,1,1};
+  VectorType scale = scaleInit;
+
+  mySphereMeshSource->SetCenter(center);
+  mySphereMeshSource->SetResolution(resolution); 
+  mySphereMeshSource->SetScale(scale);
+  mySphereMeshSource->Update();
+  
+  TriangleMeshType::Pointer sphere = mySphereMeshSource->GetOutput();
+
+  unsigned int numPoints = sphere->GetPoints()->Size();
+  PointType  point(0);
+
+  typename GradientDirectionContainerType::Pointer gradCont = GradientDirectionContainerType::New();
+  typename GradientDirectionContainerType::Element gradDir;
+
+  gradCont->Reserve(numPoints);
+  for (unsigned int pointIndex = 0; pointIndex < numPoints; pointIndex++)
+  {
+    sphere->GetPoint(pointIndex,&point);
+    gradDir[0] = point[0]; gradDir[1] = point[1]; gradDir[2] = point[2];
+    gradDir.normalize();
+    gradCont->InsertElement(pointIndex,gradDir);
+  }
+
+  return gradCont;
+}
 
 template <typename GradientDirectionContainerType>
 void loadGradDirs( typename GradientDirectionContainerType::Pointer gradDirs, std::string bvecFile, std::string bvalFile )

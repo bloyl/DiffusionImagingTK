@@ -4,6 +4,7 @@ itk_module_test()
 #changed when this module is renamed.
 
 set(${itk-module}UnitTests
+  testingUtils.cxx
   itkSymRealSphericalHarmonicRepTest.cxx
   itkPixelReorientationOperatorTest.cxx
   itkDiffusionModelCalculatorTest.cxx
