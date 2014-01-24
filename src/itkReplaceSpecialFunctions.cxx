@@ -34,14 +34,15 @@
 int
 binomialCoeff( int n, int k )
 {
-  if (k==0 || n==k)
-  {
-    return 1;
-  }
 
   if (n<0 or k<0 or k > n)
   {
     return 0;
+  }
+
+  if (k==0 || n==k)
+  {
+    return 1;
   }
 
   int result = 1;

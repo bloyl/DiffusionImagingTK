@@ -5,6 +5,8 @@ itk_module_test()
 
 set(${itk-module}UnitTests
   testingUtils.cxx
+  itkTrackerDirectionPickerImageBaseTest.cxx
+  itkReplaceSpecialFunctionsTest.cxx
   itkSymRealSphericalHarmonicRepTest.cxx
   itkPixelReorientationOperatorTest.cxx
   itkDiffusionModelCalculatorTest.cxx
@@ -23,6 +25,12 @@ set(${itk-module}UnitTests
 CreateTestDriver(${itk-module}Unit  "${${itk-module}-Test_LIBRARIES}" "${${itk-module}UnitTests}")
 
 set(TestNamePrefix "${itk-module}_")
+
+itk_add_test(NAME "${TestNamePrefix}itkTrackerDirectionPickerImageBaseTest"
+  COMMAND ${itk-module}UnitTestDriver itkTrackerDirectionPickerImageBaseTest )
+
+itk_add_test(NAME "${TestNamePrefix}itkReplaceSpecialFunctionsTest"
+  COMMAND ${itk-module}UnitTestDriver itkReplaceSpecialFunctionsTest )
 
 itk_add_test(NAME "${TestNamePrefix}itkSymRealSphericalHarmonicRepTest"
   COMMAND ${itk-module}UnitTestDriver itkSymRealSphericalHarmonicRepTest )
@@ -79,5 +87,5 @@ itk_add_test(NAME "${TestNamePrefix}itkRSHReconImageFilterTest"
     odf.nii.gz
    )
 
-# itk_add_test(NAME "${TestNamePrefix}itkFiberTrackingManagerTest2"
-#   COMMAND ${itk-module}UnitTestDriver itkFiberTrackingManagerTest2 )
+### itk_add_test(NAME "${TestNamePrefix}itkFiberTrackingManagerTest2"
+###   COMMAND ${itk-module}UnitTestDriver itkFiberTrackingManagerTest2 )
