@@ -1,12 +1,22 @@
-/**
-* @file  itkFiberTrackingManager.h
-* @brief This class is used to generate a set of fibers using supplied seed masks etc
-*
-* Copyright (c) <year> University of Pennsylvania. All rights reserved.
-* See http://www.rad.upenn.edu/sbia/software/license.html or COPYING file.
-*
-* Contact: SBIA Group <sbia-software at uphs.upenn.edu>
-*/
+/*=========================================================================
+ *
+ *  Copyright Section of Biomedical Image Analysis
+ *            University of Pennsylvania
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0.txt
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ *
+ *=========================================================================*/
+
 
 #ifndef __itkFiberTrackingManager_h
 #define __itkFiberTrackingManager_h
